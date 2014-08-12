@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+var program 	= require('commander');
+var help    	= require('../src/help.js');
+var compiler	= require('../src/compiler.js');
+
+program
+    .version('0.1.0')
+    .on('--help', function() {
+        return help();
+    })
+    .on('build', function(){
+        return compiler.build();
+    })
+    .parse(process.argv);
