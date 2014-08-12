@@ -8,16 +8,36 @@ var jsonlint 	= require('json-lint');
 var print 		= require('./print.js');
 
 module.exports = {
-	include: include,
-	insertString: insertString,
-	data: data,
-	stripData: stripData,
+    stripData: stripData,
+    insertString: insertString,
+	includeFile: includeFile,
+	getData: getData
 };
+
+
+/**
+ * Strip all @situs-data syntax on string
+ */
+function stripData(string) {
+    var regex = new RegExp(/\@situs\-data\(([\s\S]*?)\)\n?/g);
+    return string.replace(regex, '');
+}
+
+/**
+ * Insert a string based on its character index
+ */
+function insertString(mainString, insertedString, index) {
+    return [
+        mainString.slice(0, index), 
+        insertedString, 
+        mainString.slice(index)
+    ].join('');
+}
 
 /**
  * Parse @situs-include on a string
  */
-function include(filePath, string) {
+function includeFile(filePath, string, callback) {
 
     var regex       = new RegExp(/\@situs\-include\(([\s\S]*?)\)/g);
     var capture     = regex.exec(string);
@@ -26,7 +46,7 @@ function include(filePath, string) {
     var includePath = path.resolve(path.dirname(filePath), capture[1]);
 
     if (!fs.existsSync(includePath)) {
-        return print.error(
+        return callback(
             '@situs-include error:\n' +
             capture[1]+' is not exist' +
             '\n' +
@@ -52,52 +72,31 @@ function include(filePath, string) {
 
     // Recursive to find another @site-include
     if (string.match(regex)) {
-        return include(filePath, string);
+        return includeFile(filePath, string, callback);
     }
     
-    return string;
-}
-
-/**
- * Insert a string based on its character index
- */
-function insertString(mainString, insertedString, index) {
-    return [
-        mainString.slice(0, index), 
-        insertedString, 
-        mainString.slice(index)
-    ].join('');
+    return callback(null, string);
 }
 
 /**
  * Parse @situs-data and return the data object
  */
-function data(string) {
+function getData(string, callback) {
 
     var defaultData = {content: {}, error: null};
     var regex       = new RegExp(/\@situs\-data\(([\s\S]*?)\)/g);
     var capture     = regex.exec(string);
 
     if (!capture) {
-        return defaultData;
+        return callback(null, {});
     }
 
     // Check situs-data json format
     var lint = jsonlint(capture[1], {comments:false});
 
     if (lint.error) {
-        defaultData.error = lint.error;
-        return defaultData;
+        return callback(lint.error, {});
     }
 
-    defaultData.content = JSON.parse(capture[1]);
-    return defaultData;
-}
-
-/**
- * Strip all @situs-data syntax on string
- */
-function stripData(string) {
-    var regex = new RegExp(/\@situs\-data\(([\s\S]*?)\)\n?/g);
-    return string.replace(regex, '');
+    return callback(null, JSON.parse(capture[1]));
 }

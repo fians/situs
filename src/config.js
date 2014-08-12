@@ -2,49 +2,55 @@
 /**
  * Configuration module
  */
-var fs = require('fs');
-var lodash = require('lodash');
-var jsonlint = require('json-lint');
+var path        = require('path');
+var fs          = require('fs');
+var lodash      = require('lodash');
+var jsonlint    = require('json-lint');
 
 module.exports = {
-	read: read
+    read: read
 };
 
 var defaultConfig = {
-	'source_dir': './',
-	'compiled_dir': './@situs',
-	'ignore': [
-		'node_modules/**/*',
-		'[@]situs/**/*'
-	],
-	'global': {}
+    'source_dir': './',
+    'compiled_dir': './situs',
+    'ignore': [
+        'node_modules/**/*'
+    ],
+    'global': {}
 };
 
-function read(path, callback) {
+function read(filePath, callback) {
 
-	fs.exists(path, function (exists) {
+    fs.exists(filePath, function (exists) {
 
-		if (!exists) {
-			return callback(null, defaultConfig);
-		}
+        if (!exists) {
+            // Add compiled dir in ignore list
+            defaultConfig.ignore.push('!situs/**/*');
 
-		fs.readFile(path, 'utf8', function (error, data) {
+            return callback(null, defaultConfig);
+        }
 
-			if (error) {
-				return callback(error);
-			}
+        fs.readFile(filePath, 'utf8', function (error, data) {
 
-			var lint = jsonlint(data, {comments:false});
+            if (error) {
+                return callback(error);
+            }
 
-			if (lint.error) {
-				var error = 'Syntax error on situs.json:'+lint.line+'.\n'+lint.error;
-				return callback(error);
-			}
+            var lint = jsonlint(data, {comments:false});
 
-			var obj = lodash.extend(defaultConfig, JSON.parse(data));
+            if (lint.error) {
+                error = 'Syntax error on situs.json:'+lint.line+'.\n'+lint.error;
+                return callback(error);
+            }
 
-			return callback(null, obj);
-		});
+            var obj = lodash.extend(defaultConfig, JSON.parse(data));
 
-	});
+            // Add compiled dir in ignore list
+            obj.ignore.push('!'+path.normalize(obj.compiled_dir)+'/**/*');
+
+            return callback(null, obj);
+        });
+
+    });
 }

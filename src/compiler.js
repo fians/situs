@@ -10,14 +10,15 @@ var glob        = require('glob-all');
 var lodash      = require('lodash');
 var handlebars  = require('handlebars');
 var async       = require('async');
-var mkdirp      = require('mkdirp');
 
 var config      = require('./config.js');
 var parser      = require('./parser.js');
 var print       = require('./print.js');
 
 module.exports = {
-    build: build
+    build: build,
+    render: render,
+    getFileList: getFileList
 };
 
 /**
@@ -33,7 +34,7 @@ function build(callback) {
             return printError(error);
         }
 
-        getFileList(data['source_dir'], data['ignore'], function(files) {
+        getFileList(data.source_dir, data.ignore, function(files) {
 
             async.each(files, function(file, callback) {
                 render(data, file, function(err) {
@@ -63,7 +64,7 @@ function getFileList(sourceDir, ignoreList, callback) {
     var patterns = ['**/*.*'];
 
     lodash.forEach(ignoreList, function(item) {
-        patterns.push('!'+item);
+        patterns.push('!'+path.normalize(item));
     });
 
     // Glob the files
@@ -101,42 +102,45 @@ function render(data, file, callback) {
         }
 
         // Parse @situs-include()
-        string = parser.include(filePath, string);
+        parser.includeFile(filePath, string, function(err, string) {
 
-        // Parse @situs-data()
-        var localData = parser.data(string);
-
-        // If error found
-        if (localData.error) {
-            return print.error(
-                '@situs-data syntax error:\n' +
-                localData.error +
-                '\n' +
-                'at ' + filePath
-            );
-        }
-
-        // Render data
-        var templateData = lodash.extend(data.global, localData.content);
-
-        var template = handlebars.compile(string);
-        string = template(templateData);
-
-        // Strip all @situs-data from string
-        string = parser.stripData(string);
-
-        // Save file
-        var savePath = path.resolve(
-            process.cwd(), 
-            (data['compiled_dir']+'/'+file)
-        );
-
-        fs.outputFile(savePath, string, function(err) {
             if (err) {
                 return print.error(err);
             }
 
-            return callback();
+            // Parse @situs-data()
+            parser.getData(string, function(err, string) {
+
+                // If error found
+                if (err) {
+                    return print.error('@situs-data syntax error:\n' + err + '\n at ' + filePath);
+                }
+
+                // Render data
+                var templateData = lodash.extend(data.global, localData.content);
+
+                var template = handlebars.compile(string);
+                string = template(templateData);
+
+                // Strip all @situs-data from string
+                string = parser.stripData(string);
+
+                // Save file
+                var savePath = path.resolve(
+                    process.cwd(), 
+                    (data.compiled_dir+'/'+file)
+                );
+
+                fs.outputFile(savePath, string, function(err) {
+                    if (err) {
+                        return print.error(err);
+                    }
+
+                    return callback();
+                });
+
+            });
+
         });
 
     });
