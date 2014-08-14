@@ -44,15 +44,6 @@ $ situs --version
 
 By default, Situs is able run without any configuration. But, if you want something advance, you can store the configuration on situs.json right on your source directory.
 
-__Directory structure:__
-
-```
-/your-directory
-  - index.html
-  - page.html
-  - situs.json
-```
-
 __situs.json (default):__
 
 ```
@@ -74,5 +65,59 @@ __situs.json (default):__
 | `ignore`      | _array_   | List of glob pattern to prevent files or directory to be compiled by Situs |
 | `port`        | _integer_ | Port of development server                                                 |
 | `global`      | _object_  | Global variable that will be rendered to source files                      |
+
+## Built-in Function
+
+### Handlebars template
+
+Situs is using Handlebars to render data. So you can use any default template utility of Handlebars on your source files. Visit http://handlebarsjs.com/ for more information.
+
+### `@situs-include()`
+
+You can include other file inside a file, by passing relative path of the file to `@situs-include()`. This function is usefull when you needed to put same content in several source files. Situs will raise an error, if included file is not found.
+
+__Example:__
+
+_Directory structure:_
+
+```
+- /your-directory
+  - index.html
+  - header.html
+```
+
+_index.html_
+
+```html
+<html>
+  @situs-include(./header.html)
+  <body>
+  </body>
+</html>
+```
+
+_header.html_
+
+```html
+<head>
+  <title>Sample site</title>
+</head>
+```
+
+_Result_
+
+```html
+<html>
+  <head>
+    <title>Sample site</title>
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+### @situs-data()
+
+### @situs-ignore()
 
 To be continued..
