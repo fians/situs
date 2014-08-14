@@ -33,11 +33,13 @@ describe('Config Module: ', function() {
 
                 assert.equal(err, null);
                 assert.deepEqual(data, {
-                    'source_dir': './',
-                    'compiled_dir': './situs',
+                    'source': './',
+                    'destination': './situs',
+                    'port': 4000,
+                    'noConfig': true,
                     'ignore': [
                         'node_modules/**/*',
-                        '!situs/**/*'
+                        'situs/**/*'
                     ],
                     'global': {}
                 });
@@ -62,8 +64,10 @@ describe('Config Module: ', function() {
         it('should return config object if situs.json successfully parsed', function(done) {
 
             var configData = {
-                'source_dir': './',
-                'compiled_dir': './_docs',
+                'source': './',
+                'destination': './_docs',
+                'port': 8080,
+                'noConfig': false,
                 'ignore': [
                     'node_modules/**/*'
                 ],

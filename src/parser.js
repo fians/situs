@@ -42,6 +42,10 @@ function includeFile(filePath, string, callback) {
     var regex       = new RegExp(/\@situs\-include\(([\s\S]*?)\)/g);
     var capture     = regex.exec(string);
 
+    if (!capture) {
+        return callback(null, string);
+    }
+
     // Check include file
     var includePath = path.resolve(path.dirname(filePath), capture[1]);
 

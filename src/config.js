@@ -7,16 +7,20 @@ var fs          = require('fs');
 var lodash      = require('lodash');
 var jsonlint    = require('json-lint');
 
+var print       = require('./print.js');
+
 module.exports = {
     read: read
 };
 
 var defaultConfig = {
-    'source_dir': './',
-    'compiled_dir': './situs',
+    'source': './',
+    'destination': './situs',
     'ignore': [
         'node_modules/**/*'
     ],
+    'port': 4000,
+    'noConfig': false,
     'global': {}
 };
 
@@ -25,9 +29,11 @@ function read(filePath, callback) {
     fs.exists(filePath, function (exists) {
 
         if (!exists) {
-            // Add compiled dir in ignore list
-            defaultConfig.ignore.push('!situs/**/*');
 
+            // Add compiled dir in ignore list
+            defaultConfig.ignore.push('situs/**/*');
+            defaultConfig.noConfig = true;
+            
             return callback(null, defaultConfig);
         }
 
@@ -47,7 +53,7 @@ function read(filePath, callback) {
             var obj = lodash.extend(defaultConfig, JSON.parse(data));
 
             // Add compiled dir in ignore list
-            obj.ignore.push('!'+path.normalize(obj.compiled_dir)+'/**/*');
+            obj.ignore.push('!'+path.normalize(obj.destination)+'/**/*');
 
             return callback(null, obj);
         });

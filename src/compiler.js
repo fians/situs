@@ -16,39 +16,55 @@ var parser      = require('./parser.js');
 var print       = require('./print.js');
 
 module.exports = {
+    generate: generate,
     build: build,
     render: render,
     getFileList: getFileList
 };
 
 /**
- * Build site
+ * Build site (main function)
  */
-function build(callback) {
+function generate() {
 
-    var configFile = process.cwd()+'/situs.json';
+    var configFile = path.resolve(process.cwd(), './situs.json');
 
     config.read(configFile, function(error, data) {
 
         if (error) {
-            return printError(error);
+            return print.errorBuild(error);
         }
 
-        getFileList(data.source_dir, data.ignore, function(files) {
+        if (data.noConfig) {
+            print.noConfigJson();
+        }
 
-            async.each(files, function(file, callback) {
-                render(data, file, function(err) {
-                    return callback(err);
-                });
-            }, function(err) {
+        build(configData, function(err) {
 
-                if (err) {
-                    print.error(error);
-                }
+            if (err) {
+                return print.errorBuild(error);
+            }
 
-                console.log('build success');
+            return print.successBuild();
+        });
+
+    });
+
+}
+
+/**
+ * Building static site
+ */
+function build(data, callback) {
+
+    getFileList(data.source, data.ignore, function(files) {
+
+        async.each(files, function(file, callback) {
+            render(data, file, function(err) {
+                return callback(err);
             });
-
+        }, function(err) {
+            return callback(err);
         });
 
     });
@@ -93,7 +109,7 @@ function render(data, file, callback) {
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
 
         if (err) {
-            return print.error(err);
+            return print.errorBuild(err);
         }
 
         // Check ignore files
@@ -105,15 +121,15 @@ function render(data, file, callback) {
         parser.includeFile(filePath, string, function(err, string) {
 
             if (err) {
-                return print.error(err);
+                return print.errorBuild(err);
             }
 
             // Parse @situs-data()
-            parser.getData(string, function(err, string) {
+            parser.getData(string, function(err, localData) {
 
                 // If error found
                 if (err) {
-                    return print.error('@situs-data syntax error:\n' + err + '\n at ' + filePath);
+                    return print.errorBuild('@situs-data syntax error:\n' + err + '\n at ' + filePath);
                 }
 
                 // Render data
@@ -128,12 +144,12 @@ function render(data, file, callback) {
                 // Save file
                 var savePath = path.resolve(
                     process.cwd(), 
-                    (data.compiled_dir+'/'+file)
+                    (data.destination+'/'+file)
                 );
 
                 fs.outputFile(savePath, string, function(err) {
                     if (err) {
-                        return print.error(err);
+                        return print.errorBuild(err);
                     }
 
                     return callback();
