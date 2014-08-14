@@ -2,13 +2,14 @@
   "name": "situs",
   "version": "0.1.0",
   "description": "Simple static site generator",
-  "main": "src/main.js",
+  "main": "./src/main.js",
   "scripts": {
     "test": "mocha"
   },
   "bin": {
-    "situs": "src/main.js"
+    "situs": "./bin/situs"
   },
+  "preferGlobal": "true",
   "repository": {
     "type": "git",
     "url": "git://github.com/fians/situs.git"
