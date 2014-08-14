@@ -67,8 +67,12 @@ __situs.json (default):__
 }
 ```
 
-| Parameter | Value    | Description |
-|-----------|----------|-------------|
-| `source`  | _string_ | test        |
+| Parameter     | Value     | Description                                                                |
+|---------------|-----------|----------------------------------------------------------------------------|
+| `source`      | _string_  | Source directory of static site                                            |
+| `destination` | _string_  | Destination directory of static site for compiled source files             |
+| `ignore`      | _array_   | List of glob pattern to prevent files or directory to be compiled by Situs |
+| `port`        | _integer_ | Port of development server                                                 |
+| `global`      | _object_  | Global variable that will be rendered to source files                      |
 
 To be continued..
