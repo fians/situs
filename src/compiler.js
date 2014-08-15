@@ -39,7 +39,7 @@ function generate() {
             print.noConfigJson();
         }
 
-        build(configData, function(err) {
+        build(data, function(err) {
 
             if (err) {
                 return print.errorBuild(error);
