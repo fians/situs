@@ -27,7 +27,7 @@ function start() {
 
         var sourceDir   = path.resolve(process.cwd(), configData.source);
         var destDir     = path.resolve(process.cwd(), configData.destination);
-        var fileServer  = new nstatic.Server(destDir);
+        var fileServer  = new nstatic.Server(destDir, {cache: false});
 
         process.chdir(sourceDir);
 
