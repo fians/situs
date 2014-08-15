@@ -48,7 +48,7 @@ __situs.json (default):__
 
 ```
 {
-  "source': "./",
+  "source": "./",
   "destination": "./situs",
   "ignore": [
     "node_modules/**/*"
