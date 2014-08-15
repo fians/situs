@@ -39,7 +39,7 @@ function start() {
         print.startServer(configData.port);
 
         // Watch change
-        var watcher = chokidar.watch(sourceDir, {ignoreInitial: true});
+        var watcher = chokidar.watch(sourceDir);
         var fsWatch = null;
 
         watcher.on('all', function(event, obj) {
