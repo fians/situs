@@ -90,7 +90,12 @@ function getFileList(sourceDir, ignoreList, callback) {
 
     // Filter file only
     files = lodash.filter(files, function(item) {
-        var filePath = path.resolve(process.cwd(), item);
+        var filePath = path.resolve(process.cwd(), sourceDir+'/'+item);
+
+        if (!fs.existsSync(filePath)) {
+            return false;
+        }
+
         return fs.lstatSync(filePath).isFile();
     });
 
@@ -104,7 +109,7 @@ function getFileList(sourceDir, ignoreList, callback) {
 function render(data, file, callback) {
 
     // Get full path dan file content
-    var filePath = path.resolve(process.cwd(), file);
+    var filePath = path.resolve(process.cwd(), data.source+'/'+file);
 
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
 
