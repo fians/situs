@@ -29,8 +29,6 @@ function start() {
         var destDir     = path.resolve(process.cwd(), configData.destination);
         var fileServer  = new nstatic.Server(destDir, {cache: false});
 
-        process.chdir(sourceDir);
-
         // Start server
         require('http').createServer(function (request, response) {
             request.addListener('end', function () {

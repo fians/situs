@@ -56,9 +56,9 @@ function generate() {
  * Building static site
  */
 function build(data, callback) {
-
+    
     getFileList(data.source, data.ignore, function(files) {
-
+        
         async.each(files, function(file, callback) {
             render(data, file, function(err) {
                 return callback(err);
@@ -107,12 +107,12 @@ function getFileList(sourceDir, ignoreList, callback) {
  * render data, and save file to compiled directory
  */
 function render(data, file, callback) {
-
+    
     // Get full path dan file content
     var filePath = path.resolve(process.cwd(), data.source+'/'+file);
 
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
-
+        
         if (err) {
             return print.errorBuild(err);
         }
@@ -124,14 +124,14 @@ function render(data, file, callback) {
 
         // Parse @situs-include()
         parser.includeFile(filePath, string, function(err, string) {
-
+            
             if (err) {
                 return print.errorBuild(err);
             }
 
             // Parse @situs-data()
             parser.getData(string, function(err, localData) {
-
+                
                 // If error found
                 if (err) {
                     return print.errorBuild('@situs-data syntax error:\n' + err + '\n at ' + filePath);
