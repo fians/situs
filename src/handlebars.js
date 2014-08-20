@@ -7,15 +7,21 @@ var handlebars  = require('handlebars');
 var hljs        = require('highlight.js');
 
 /**
- * Escape string
+ * Escape function
  */
-handlebars.registerHelper('escape', function(options) {
-    return options.fn(this)
+function escapeString(string) {
+    return string
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
-        
+}
+
+/**
+ * Escape string
+ */
+handlebars.registerHelper('escape', function(options) {
+    return escapeString(options.fn(this));
 });
 
 /**
@@ -23,14 +29,16 @@ handlebars.registerHelper('escape', function(options) {
  */
 handlebars.registerHelper('code', function(options) {
 
-    if (options.hash.hasOwnProperty('lang')) {
-        var lang = options.hash.lang;
-        string = '<pre><code class="'+lang+'">' + hljs.highlight(lang, options.fn(this)).value;
-    } else {
-        string = '<pre><code>' + hljs.highlightAuto(options.fn(this)).value;
+    var attribute = 'none';
+    var string = escapeString(options.fn(this));
+
+    if (options.hash.hasOwnProperty('class')) {
+        attribute = options.hash.class;
     }
 
-    return string += '</code></pre>';
+    return '<pre><code class="'+attribute+'">' + 
+        string.replace(/(\r\n|\r|\n)/, '') + 
+        '</code></pre>';
 });
 
 module.exports = handlebars;
