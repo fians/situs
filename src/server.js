@@ -44,16 +44,11 @@ function start() {
 
         watcher.on('all', function(event, obj) {
 
-            if (event === 'error') {
-                throw err;
-            }
-
             if (obj.replace(destDir, '').indexOf(sourceDir) !== -1 && (!fsWatch)) {
                 
-                // Catch only one event
                 fsWatch = setTimeout(function() {
-                    compiler.build(configData, function(err) {
-
+                    return compiler.build(configData, function(err) {
+                        
                         if (err) {
                             print.errorBuild(err);
                         } else {
@@ -65,6 +60,11 @@ function start() {
                 }, 10);
             }
            
+        });
+
+        // Make sure watching still run even there is error
+        process.on('uncaughtException', function(err) {
+            fsWatch = true;
         });
 
     });

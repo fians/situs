@@ -56,7 +56,7 @@ function generate() {
  * Building static site
  */
 function build(data, callback) {
-
+    
     // Clean destination directory
     cleanDirectory(path.resolve(process.cwd(), data.destination));
     
@@ -141,7 +141,7 @@ function render(data, file, callback) {
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
         
         if (err) {
-            return print.errorBuild(err);
+            return callback(err);
         }
 
         // Check ignore files
@@ -153,7 +153,7 @@ function render(data, file, callback) {
         parser.includeFile(filePath, string, function(err, string) {
             
             if (err) {
-                return print.errorBuild(err);
+                return callback(err);
             }
 
             // Parse @situs-data()
@@ -161,14 +161,18 @@ function render(data, file, callback) {
                 
                 // If error found
                 if (err) {
-                    return print.errorBuild('@situs-data syntax error:\n' + err + '\n at ' + filePath);
+                    return callback('@situs-data syntax error:\n' + err + '\n at ' + filePath);
                 }
 
                 // Render data
                 var templateData = lodash.extend(data.global, localData.content);
 
-                var template = handlebars.compile(string);
-                string = template(templateData);
+                try {
+                    var template = handlebars.compile(string);
+                    string = template(templateData);
+                } catch(e) {
+                    return callback(e+'\nat '+filePath);
+                }
 
                 // Strip all @situs-data from string
                 string = parser.stripData(string);
@@ -194,7 +198,7 @@ function render(data, file, callback) {
 
                 fs.outputFile(savePath, string, function(err) {
                     if (err) {
-                        return print.errorBuild(err);
+                        return callback(err);
                     }
 
                     return callback();
