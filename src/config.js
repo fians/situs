@@ -13,19 +13,20 @@ module.exports = {
     read: read
 };
 
-var defaultConfig = {
-    'source': './',
-    'destination': './situs',
-    'ignore': [
-        'node_modules/**/*',
-        'situs.json'
-    ],
-    'port': 4000,
-    'noConfig': false,
-    'global': {}
-};
-
 function read(filePath, callback) {
+
+    var defaultConfig = {
+        'source': './',
+        'destination': './situs',
+        'ignore': [
+            'node_modules/**/*',
+            'situs.json'
+        ],
+        'markdown': false,
+        'port': 4000,
+        'noConfig': false,
+        'global': {}
+    };
 
     fs.exists(filePath, function (exists) {
 
@@ -51,10 +52,11 @@ function read(filePath, callback) {
                 return callback(error);
             }
 
-            var obj = lodash.extend(defaultConfig, JSON.parse(data));
+            var obj = lodash.extend({}, defaultConfig, JSON.parse(data));
 
-            // Add compiled dir in ignore list
+            // Merge ignore list
             obj.ignore.push(path.normalize(obj.destination)+'/**/*');
+            obj.ignore = lodash.union(obj.ignore, defaultConfig.ignore);
 
             return callback(null, obj);
         });

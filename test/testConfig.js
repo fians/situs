@@ -35,10 +35,12 @@ describe('Config Module: ', function() {
                 assert.deepEqual(data, {
                     'source': './',
                     'destination': './situs',
+                    'markdown': false,
                     'port': 4000,
                     'noConfig': true,
                     'ignore': [
                         'node_modules/**/*',
+                        'situs.json',
                         'situs/**/*'
                     ],
                     'global': {}
@@ -66,10 +68,11 @@ describe('Config Module: ', function() {
             var configData = {
                 'source': './',
                 'destination': './_docs',
+                'markdown': false,
                 'port': 8080,
                 'noConfig': false,
                 'ignore': [
-                    'node_modules/**/*'
+                    'node_modules/**/*',
                 ],
                 'global': {}
             };
@@ -80,7 +83,8 @@ describe('Config Module: ', function() {
 
             config.read(filePath, function(err, data) {
 
-                configData.ignore.push('!_docs/**/*');
+                configData.ignore.push('_docs/**/*');
+                configData.ignore.push('situs.json');
 
                 assert.equal(err, null);
                 assert.deepEqual(data, configData);
