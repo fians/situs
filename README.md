@@ -219,7 +219,7 @@ _Directory structure (after build)_
 ```
 - \main-directory
     - \destination
-      - inde.html
+      - index.html
     - \source
       - index.html
       - page.html
