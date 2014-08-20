@@ -53,7 +53,7 @@ function read(filePath, callback) {
             var obj = lodash.extend(defaultConfig, JSON.parse(data));
 
             // Add compiled dir in ignore list
-            obj.ignore.push('!'+path.normalize(obj.destination)+'/**/*');
+            obj.ignore.push(path.normalize(obj.destination)+'/**/*');
 
             return callback(null, obj);
         });
