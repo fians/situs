@@ -20,7 +20,6 @@ var defaultConfig = {
         'node_modules/**/*',
         'situs.json'
     ],
-    'markdown': false,
     'port': 4000,
     'noConfig': false,
     'global': {}
