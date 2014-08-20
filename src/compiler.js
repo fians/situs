@@ -10,6 +10,7 @@ var glob        = require('glob-all');
 var lodash      = require('lodash');
 var handlebars  = require('handlebars');
 var async       = require('async');
+var marked      = require('marked');
 
 var config      = require('./config.js');
 var parser      = require('./parser.js');
@@ -18,7 +19,6 @@ var print       = require('./print.js');
 module.exports = {
     generate: generate,
     build: build,
-    render: render,
     getFileList: getFileList
 };
 
@@ -56,6 +56,9 @@ function generate() {
  * Building static site
  */
 function build(data, callback) {
+
+    // Clean destination directory
+    cleanDirectory(path.resolve(process.cwd(), data.destination));
     
     getFileList(data.source, data.ignore, function(files) {
         
@@ -103,13 +106,37 @@ function getFileList(sourceDir, ignoreList, callback) {
 }
 
 /**
+ * Clean all files in directory
+ */
+function cleanDirectory(dirPath) {
+
+    var files = glob.sync(['**/*'], {
+        cwd: dirPath,
+    });
+
+    lodash.forEach(files, function(file) {
+        fs.removeSync(path.resolve(dirPath, file));
+    });
+
+}
+
+/**
  * Process file by parse all @situs syntax,
  * render data, and save file to compiled directory
  */
 function render(data, file, callback) {
     
     // Get full path dan file content
-    var filePath = path.resolve(process.cwd(), data.source+'/'+file);
+    var filePath    = path.resolve(process.cwd(), data.source+'/'+file);
+    var fileExt     = path.extname(filePath).toLowerCase();
+
+    // Detect markdown file
+    var isMarkdown  = false;
+    var markdownExt = ['.markdown', '.md'];
+
+    if (markdownExt.indexOf(fileExt) !== -1) {
+        isMarkdown = true;
+    }
 
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
         
@@ -145,6 +172,19 @@ function render(data, file, callback) {
 
                 // Strip all @situs-data from string
                 string = parser.stripData(string);
+                    
+                /**
+                 * Parse markdown file
+                 */
+                if (data.markdown && isMarkdown) {
+
+                    // Convert string
+                    string = marked(string);
+
+                    // Convert to html file
+                    file = path.basename(file, fileExt) + '.html';
+
+                }
 
                 // Save file
                 var savePath = path.resolve(
