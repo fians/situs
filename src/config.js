@@ -17,7 +17,8 @@ var defaultConfig = {
     'source': './',
     'destination': './situs',
     'ignore': [
-        'node_modules/**/*'
+        'node_modules/**/*',
+        'situs.json'
     ],
     'port': 4000,
     'noConfig': false,
