@@ -132,7 +132,7 @@ function render(data, file, callback) {
 
     // Detect markdown file
     var isMarkdown  = false;
-    var markdownExt = ['.markdown', '.md'];
+    var markdownExt = ['markdown', 'mdown', 'mkdn', 'mkd', 'md'];
 
     if (markdownExt.indexOf(fileExt) !== -1) {
         isMarkdown = true;
@@ -172,7 +172,7 @@ function render(data, file, callback) {
 
                 // Strip all @situs-data from string
                 string = parser.stripData(string);
-                    
+                
                 /**
                  * Parse markdown file
                  */
