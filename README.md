@@ -57,6 +57,7 @@ __situs.json (default):__
   "ignore": [
     "node_modules/**/*"
   ],
+  "markdown": false,
   "port": 4000,
   "global": {}
 }
@@ -67,6 +68,7 @@ __situs.json (default):__
 | `source`      | _string_  | Source directory of static site                                            |
 | `destination` | _string_  | Destination directory of static site for compiled source files             |
 | `ignore`      | _array_   | List of glob pattern to prevent files or directory to be compiled by Situs |
+| `markdown`    | _boolean_ | Render markdown to html. If it set `false`, markdown file will not converted to be html when you build source.|
 | `port`        | _integer_ | Port of development server                                                 |
 | `global`      | _object_  | Global variable that will be rendered to source files                      |
 
@@ -74,7 +76,46 @@ __situs.json (default):__
 
 ### Handlebars template
 
-Situs is using Handlebars to render data. So you can use any default template utility of Handlebars on your source files. Visit http://handlebarsjs.com/ for more information.
+Situs is using Handlebars to render data and also include some additional helpers function like,
+
+__{{#escape}}__ : Used for escaping html string, especially in html file. Example:
+
+```
+{{#escape}}
+<html>
+</html>
+{{#escape}}
+
+# Will be rendered to
+&lt;html&gt;
+&lt;/html&gt;
+```
+__{{#code}}__ : Used for escaping code and also wrapping it inside `<pre>` and `<code>`. Example:
+
+```
+{{#code}}
+<html>
+</html>
+{{#code}}
+
+# Will be rendered to
+<pre><code>&lt;html&gt;
+&lt;/html&gt;
+</code></pre>
+
+# You can also add class in your <code> tag (usually for syntax highlighter)
+{{#code class="lang-html"}}
+<html>
+</html>
+{{#code}}
+
+# Will be rendered to
+<pre><code class="lang-html">&lt;html&gt;
+&lt;/html&gt;
+</code></pre>
+```
+
+For other Handlebars helper, please visit http://handlebarsjs.com/.
 
 ### `@situs-include(filePath)`
 
