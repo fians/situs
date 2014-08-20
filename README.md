@@ -1,5 +1,9 @@
 # Situs
 
+[![Build Status](https://travis-ci.org/fians/situs.svg?branch=v0.2.0-dev)](https://travis-ci.org/fians/situs)
+[![NPM version](https://badge.fury.io/js/situs.svg)](http://badge.fury.io/js/situs)
+![NPM version](http://img.shields.io/npm/dm/situs.svg)
+
 Simple static site generator. Just it.
 
 ## Getting Started
