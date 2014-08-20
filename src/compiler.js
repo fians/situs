@@ -8,11 +8,11 @@ var fs          = require('fs-extra');
 var path        = require('path');
 var glob        = require('glob-all');
 var lodash      = require('lodash');
-var handlebars  = require('handlebars');
 var async       = require('async');
 var marked      = require('marked');
 
 var config      = require('./config.js');
+var handlebars  = require('./handlebars.js');
 var parser      = require('./parser.js');
 var print       = require('./print.js');
 
@@ -179,7 +179,7 @@ function render(data, file, callback) {
                 if (data.markdown && isMarkdown) {
 
                     // Convert string
-                    string = marked(string);
+                    string = marked(string, {sanitize: false});
 
                     // Convert to html file
                     file = path.basename(file, fileExt) + '.html';
