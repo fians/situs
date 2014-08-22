@@ -42,7 +42,7 @@ function generate() {
         build(data, function(err) {
 
             if (err) {
-                return print.errorBuild(error);
+                return print.errorBuild(err);
             }
 
             return print.successBuild();
@@ -134,11 +134,6 @@ function render(data, file, callback) {
     var isMarkdown  = false;
     var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
 
-    if (markdownExt.indexOf(fileExt) !== -1) {
-
-        isMarkdown = true;
-    }
-
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
         
         if (err) {
@@ -148,6 +143,18 @@ function render(data, file, callback) {
         // Check ignore files
         if (string.indexOf('@situs-ignore()') !== -1) {
             return callback();
+        }
+
+        /**
+         * Parse markdown file
+         */
+        if (data.markdown && (markdownExt.indexOf(fileExt) !== -1)) {
+
+            // Convert string
+            string = marked(string, {sanitize: false});
+
+            // Convert to html file
+            file = path.basename(file, fileExt) + '.html';
         }
 
         // Parse @situs-include()
@@ -177,19 +184,6 @@ function render(data, file, callback) {
 
                 // Strip all @situs-data from string
                 string = parser.stripData(string);
-                
-                /**
-                 * Parse markdown file
-                 */
-                if (data.markdown && isMarkdown) {
-
-                    // Convert string
-                    string = marked(string, {sanitize: false});
-
-                    // Convert to html file
-                    file = path.basename(file, fileExt) + '.html';
-
-                }
 
                 // Save file
                 var savePath = path.resolve(
