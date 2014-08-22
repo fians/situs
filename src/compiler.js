@@ -132,9 +132,10 @@ function render(data, file, callback) {
 
     // Detect markdown file
     var isMarkdown  = false;
-    var markdownExt = ['markdown', 'mdown', 'mkdn', 'mkd', 'md'];
+    var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
 
     if (markdownExt.indexOf(fileExt) !== -1) {
+
         isMarkdown = true;
     }
 
