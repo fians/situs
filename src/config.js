@@ -10,7 +10,8 @@ var jsonlint    = require('json-lint');
 var print       = require('./print.js');
 
 module.exports = {
-    read: read
+    read: read,
+    get: get
 };
 
 function read(filePath, callback) {
@@ -35,8 +36,11 @@ function read(filePath, callback) {
             // Add compiled dir in ignore list
             defaultConfig.ignore.push('situs/**/*');
             defaultConfig.noConfig = true;
-            
-            return callback(null, defaultConfig);
+
+            // Set environment
+            process.env.SITUS = JSON.stringify(defaultConfig);
+
+            return callback();
         }
 
         fs.readFile(filePath, 'utf8', function (error, data) {
@@ -58,8 +62,30 @@ function read(filePath, callback) {
             obj.ignore.push(path.normalize(obj.destination)+'/**/*');
             obj.ignore = lodash.union(obj.ignore, defaultConfig.ignore);
 
-            return callback(null, obj);
+            // Set environment
+            process.env.SITUS = JSON.stringify(obj);
+
+            return callback();
         });
 
     });
+}
+
+/**
+ * Get data from JSON string process.env.SITUS
+ */
+function get(param) {
+
+    if (!process.env.hasOwnProperty('SITUS')) {
+        return null;
+    }
+
+    var config = JSON.parse(process.env.SITUS);
+
+    if (!(config.hasOwnProperty(param))) {
+        return false;
+    }
+
+    return config[param];
+
 }

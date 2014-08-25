@@ -12,12 +12,20 @@ var config  = require('../src/config.js');
 describe('Config Module: ', function() {
 
     beforeEach(function(done) {
+
+        // Clear situs global
+        delete process.env.SITUS;
+
         utils.createContainer(function() {
             return done();
         });
     });
 
     afterEach(function(done) {
+
+        // Clear situs global
+        delete process.env.SITUS;
+
         utils.clearContainer(function() {
             return done();
         });
@@ -29,23 +37,23 @@ describe('Config Module: ', function() {
             
             var filePath = path.resolve(process.cwd(), './situs.json');
 
-            config.read(filePath, function(err, data) {
+            var defaultConfig = {
+                'source': './',
+                'destination': './situs',
+                'ignore': [
+                    'node_modules/**/*',
+                    'situs.json',
+                    'situs/**/*'
+                ],
+                'markdown': false,
+                'port': 4000,
+                'noConfig': true,
+                'global': {}
+            };
 
-                assert.equal(err, null);
-                assert.deepEqual(data, {
-                    'source': './',
-                    'destination': './situs',
-                    'markdown': false,
-                    'port': 4000,
-                    'noConfig': true,
-                    'ignore': [
-                        'node_modules/**/*',
-                        'situs.json',
-                        'situs/**/*'
-                    ],
-                    'global': {}
-                });
-
+            config.read(filePath, function(err) {
+                assert.equal(err, undefined);
+                assert.deepEqual(process.env.SITUS, JSON.stringify(defaultConfig));
                 done();
             });
 
@@ -68,12 +76,12 @@ describe('Config Module: ', function() {
             var configData = {
                 'source': './',
                 'destination': './_docs',
-                'markdown': false,
-                'port': 8080,
-                'noConfig': false,
                 'ignore': [
                     'node_modules/**/*',
                 ],
+                'markdown': false,
+                'port': 8080,
+                'noConfig': false,
                 'global': {}
             };
 
@@ -81,16 +89,40 @@ describe('Config Module: ', function() {
 
             var filePath = path.resolve(process.cwd(), './situs.json');
 
-            config.read(filePath, function(err, data) {
+            config.read(filePath, function(err) {
 
                 configData.ignore.push('_docs/**/*');
                 configData.ignore.push('situs.json');
 
-                assert.equal(err, null);
-                assert.deepEqual(data, configData);
+                assert.equal(err, undefined);
+                assert.deepEqual(process.env.SITUS, JSON.stringify(configData));
 
                 done();
             });
+        });
+
+    });
+
+    describe('config.get() test', function() {
+
+        it('should return null if process.env.SITUS is not exist', function() {
+
+            assert.equal(null, config.get('source'));
+
+        });
+
+        it('should return false if parameter is not exist', function() {
+
+            process.env.SITUS = JSON.stringify({destination: './situs'});
+            assert.equal(false, config.get('source'));
+
+        });
+
+        it('should return correct value if parameter exist', function() {
+
+            process.env.SITUS = JSON.stringify({source: './situs'});
+            assert.equal('./situs', config.get('source'));
+
         });
 
     });
