@@ -29,17 +29,17 @@ function generate() {
 
     var configFile = path.resolve(process.cwd(), './situs.json');
 
-    config.read(configFile, function(error, data) {
+    config.read(function(error) {
 
         if (error) {
             return print.errorBuild(error);
         }
 
-        if (data.noConfig) {
+        if (config.get('noConfig')) {
             print.noConfigJson();
         }
 
-        build(data, function(err) {
+        build(function(err) {
 
             if (err) {
                 return print.errorBuild(err);
@@ -55,15 +55,15 @@ function generate() {
 /**
  * Building static site
  */
-function build(data, callback) {
+function build(callback) {
     
     // Clean destination directory
-    cleanDirectory(path.resolve(process.cwd(), data.destination));
+    cleanDirectory(path.resolve(process.cwd(), config.get('destination')));
     
-    getFileList(data.source, data.ignore, function(files) {
+    getFileList(config.get('source'), config.get('ignore'), function(files) {
         
         async.each(files, function(file, callback) {
-            render(data, file, function(err) {
+            render(file, function(err) {
                 return callback(err);
             });
         }, function(err) {
@@ -124,10 +124,10 @@ function cleanDirectory(dirPath) {
  * Process file by parse all @situs syntax,
  * render data, and save file to compiled directory
  */
-function render(data, file, callback) {
+function render(file, callback) {
     
     // Get full path dan file content
-    var filePath    = path.resolve(process.cwd(), data.source+'/'+file);
+    var filePath    = path.resolve(process.cwd(), config.get('source')+'/'+file);
     var fileExt     = path.extname(filePath).toLowerCase();
 
     // Detect markdown file
@@ -148,7 +148,7 @@ function render(data, file, callback) {
         /**
          * Parse markdown file
          */
-        if (data.markdown && (markdownExt.indexOf(fileExt) !== -1)) {
+        if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
 
             // Convert string
             string = marked(string, {sanitize: false});
@@ -173,7 +173,7 @@ function render(data, file, callback) {
                 }
 
                 // Render data
-                var templateData = lodash.extend(data.global, localData.content);
+                var templateData = lodash.extend(config.get('global'), localData.content);
 
                 try {
                     var template = handlebars.compile(string);
@@ -188,7 +188,7 @@ function render(data, file, callback) {
                 // Save file
                 var savePath = path.resolve(
                     process.cwd(), 
-                    (data.destination+'/'+file)
+                    (config.get('destination')+'/'+file)
                 );
 
                 fs.outputFile(savePath, string, function(err) {

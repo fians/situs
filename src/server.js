@@ -25,8 +25,8 @@ function start() {
 
     config.read(configFile, function(err, configData) {
 
-        var sourceDir   = path.resolve(process.cwd(), configData.source);
-        var destDir     = path.resolve(process.cwd(), configData.destination);
+        var sourceDir   = path.resolve(process.cwd(), config.get('source'));
+        var destDir     = path.resolve(process.cwd(), config.get('destination'));
         var fileServer  = new nstatic.Server(destDir, {cache: false});
 
         // Start server
@@ -34,9 +34,9 @@ function start() {
             request.addListener('end', function () {
                 fileServer.serve(request, response);
             }).resume();
-        }).listen(configData.port);
+        }).listen(config.get('port'));
 
-        print.startServer(configData.port);
+        print.startServer(config.get('port'));
 
         // Watch change
         var watcher = chokidar.watch(sourceDir);
