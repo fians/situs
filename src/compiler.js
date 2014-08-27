@@ -27,7 +27,9 @@ module.exports = {
  */
 function generate() {
 
-    config.read(function(error) {
+    var configFile = path.resolve(process.cwd(), './situs.json');
+
+    config.read(configFile, function(error) {
 
         if (error) {
             return print.errorBuild(error);
