@@ -14,7 +14,7 @@ module.exports = {
     get: get
 };
 
-function read(filePath, callback) {
+function read(callback) {
 
     var defaultConfig = {
         'source': './',
@@ -28,6 +28,8 @@ function read(filePath, callback) {
         'noConfig': false,
         'global': {}
     };
+
+    var filePath = path.resolve(process.cwd(), './situs.json');
 
     fs.exists(filePath, function (exists) {
 

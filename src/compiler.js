@@ -27,8 +27,6 @@ module.exports = {
  */
 function generate() {
 
-    var configFile = path.resolve(process.cwd(), './situs.json');
-
     config.read(function(error) {
 
         if (error) {
