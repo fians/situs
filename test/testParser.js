@@ -93,39 +93,33 @@ describe('Parser module:', function() {
 
     describe('data() test', function() {
 
-        it('should return empty data if @situs-data() not found', function(done) {
+        it('should return empty data if @situs-data() not found', function() {
 
             var string = 'hello world';
 
-            parser.getData(string, function(err, result) {
-                assert.equal(err, null);
-                assert.deepEqual(result, {});
-                done();
-            });
+            var result = parser.getData(string);
+            assert.equal(result.error, null);
+            assert.deepEqual(result.content, {});
 
         });
 
-        it('should return error if @situs-data is not well formatted', function(done) {
+        it('should return error if @situs-data is not well formatted', function() {
             
             var string = 'hello world @situs-data({"hello": )';
 
-            parser.getData(string, function(err, result) {
-                assert.notEqual(err, null);
-                assert.deepEqual(result, {});
-                done();
-            });
+            var result = parser.getData(string);
+            assert.notEqual(result.error, null);
+            assert.deepEqual(result.content, {});
 
         });
 
-        it('should return data if @situs-data contain JSON string', function(done) {
+        it('should return data if @situs-data contain JSON string', function() {
             
             var string = 'hello world @situs-data({"hello": "world"})';
 
-            parser.getData(string, function(err, result) {
-                assert.equal(err, null);
-                assert.deepEqual(result, {hello: 'world'});
-                done();
-            });
+            var result = parser.getData(string);
+            assert.equal(result.error, null);
+            assert.deepEqual(result.content, {hello: 'world'});
 
         });
     });

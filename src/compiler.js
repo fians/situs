@@ -131,7 +131,6 @@ function render(file, callback) {
     var fileExt     = path.extname(filePath).toLowerCase();
 
     // Detect markdown file
-    var isMarkdown  = false;
     var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
 
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
@@ -145,6 +144,18 @@ function render(file, callback) {
             return callback();
         }
 
+        // Parse @situs-data()
+        var localData = parser.getData(string);
+                
+        // If error found
+        if (err) {
+            console.log(string);
+            return callback('@situs-data syntax error:\n' + err + '\n at ' + filePath);
+        }
+
+        // Strip all @situs-data from string
+        string = parser.stripData(string);
+
         /**
          * Parse markdown file
          */
@@ -152,9 +163,6 @@ function render(file, callback) {
 
             // Convert string
             string = marked(string, {sanitize: false});
-
-            // Convert to html file
-            file = path.basename(file, fileExt) + '.html';
         }
 
         // Parse @situs-include()
@@ -164,41 +172,35 @@ function render(file, callback) {
                 return callback(err);
             }
 
-            // Parse @situs-data()
-            parser.getData(string, function(err, localData) {
-                
-                // If error found
+            // Render data
+            var templateData = lodash.extend(config.get('global'), localData.content);
+
+            try {
+                var template = handlebars.compile(string);
+                string = template(templateData);
+            } catch(e) {
+                return callback(e+'\nat '+filePath);
+            }
+
+            /**
+             * // Convert to html file
+             */
+            if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
+                file = path.basename(file, fileExt) + '.html';
+            }
+
+            // Save file
+            var savePath = path.resolve(
+                process.cwd(), 
+                (config.get('destination')+'/'+file)
+            );
+
+            fs.outputFile(savePath, string, function(err) {
                 if (err) {
-                    return callback('@situs-data syntax error:\n' + err + '\n at ' + filePath);
+                    return callback(err);
                 }
 
-                // Render data
-                var templateData = lodash.extend(config.get('global'), localData.content);
-
-                try {
-                    var template = handlebars.compile(string);
-                    string = template(templateData);
-                } catch(e) {
-                    return callback(e+'\nat '+filePath);
-                }
-
-                // Strip all @situs-data from string
-                string = parser.stripData(string);
-
-                // Save file
-                var savePath = path.resolve(
-                    process.cwd(), 
-                    (config.get('destination')+'/'+file)
-                );
-
-                fs.outputFile(savePath, string, function(err) {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    return callback();
-                });
-
+                return callback();
             });
 
         });

@@ -5,6 +5,8 @@
 var fs 			= require('fs');
 var path        = require('path');
 var jsonlint 	= require('json-lint');
+var marked      = require('marked');
+var config      = require('./config.js');
 var print 		= require('./print.js');
 
 module.exports = {
@@ -39,8 +41,14 @@ function insertString(mainString, insertedString, index) {
  */
 function includeFile(filePath, string, callback) {
 
-    var regex       = new RegExp(/\@situs\-include\(([\s\S]*?)\)/g);
+    // Check @situs include inside <p>
+    var regex       = new RegExp(/<p\>\@situs\-include\(([\s\S]*?)\)<\/p\>/g);
     var capture     = regex.exec(string);
+
+    if (!capture) {
+        regex       = new RegExp(/\@situs\-include\(([\s\S]*?)\)/g);
+        capture     = regex.exec(string);
+    }
 
     if (!capture) {
         return callback(null, string);
@@ -85,22 +93,28 @@ function includeFile(filePath, string, callback) {
 /**
  * Parse @situs-data and return the data object
  */
-function getData(string, callback) {
+function getData(string) {
 
-    var defaultData = {content: {}, error: null};
+    var data = {
+        content: {}, 
+        error: null
+    };
+
     var regex       = new RegExp(/\@situs\-data\(([\s\S]*?)\)/g);
     var capture     = regex.exec(string);
 
     if (!capture) {
-        return callback(null, {});
+        return data;
     }
 
     // Check situs-data json format
     var lint = jsonlint(capture[1], {comments:false});
 
     if (lint.error) {
-        return callback(lint.error, {});
+        data.error = lint.error;
+        return data;
     }
 
-    return callback(null, JSON.parse(capture[1]));
+    data.content = JSON.parse(capture[1]);
+    return data;
 }
