@@ -41,14 +41,17 @@ function insertString(mainString, insertedString, index) {
  */
 function includeFile(filePath, string, callback) {
 
-    // Check @situs include inside <p>
-    var regex       = new RegExp(/<p\>\@situs\-include\(([\s\S]*?)\)<\/p\>/g);
-    var capture     = regex.exec(string);
+    // Detect markdown file
+    var fileExt     = path.extname(filePath).toLowerCase();
+    var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
 
-    if (!capture) {
-        regex       = new RegExp(/\@situs\-include\(([\s\S]*?)\)/g);
-        capture     = regex.exec(string);
+    // If file is markdown, remove <p> tag around it
+    if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
+        string = string.replace(/<p\>(\@situs\-include\([\s\S]*?\))<\/p\>/g, '$1');
     }
+
+    var regex    = new RegExp(/\@situs\-include\(([\s\S]*?)\)/g);
+    var capture  = regex.exec(string);
 
     if (!capture) {
         return callback(null, string);

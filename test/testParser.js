@@ -11,12 +11,18 @@ var parser  = require('../src/parser.js');
 describe('Parser module:', function() {
 
     beforeEach(function(done) {
+
+        delete process.env.SITUS;
+
         utils.createContainer(function() {
             return done();
         });
     });
 
     afterEach(function(done) {
+
+        delete process.env.SITUS;
+        
         utils.clearContainer(function() {
             return done();
         });
@@ -67,6 +73,23 @@ describe('Parser module:', function() {
             utils.createFile('./index.html', string);
 
             parser.includeFile('./index.html', string, function(err, string) {
+                assert.equal(err, null);
+                assert.equal(string, '<head></head>');
+                done();
+            });
+
+        });
+
+        it('should return a string without <p> tag around it for markdown file', function(done) {
+
+            process.env.SITUS = '{"markdown": true}';
+
+            var string = '<p>@situs-include(./header.html)</p>';
+
+            utils.createFile('./header.html', '<head></head>');
+            utils.createFile('./index.md', string);
+
+            parser.includeFile('./index.md', string, function(err, string) {
                 assert.equal(err, null);
                 assert.equal(string, '<head></head>');
                 done();
