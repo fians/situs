@@ -40,14 +40,15 @@ function start() {
 
         // Watch change
         var watcher = chokidar.watch(sourceDir);
-        var fsWatch = null;
+        var fsWatch = false;
 
         watcher.on('all', function(event, obj) {
 
             if (obj.replace(destDir, '').indexOf(sourceDir) !== -1 && (!fsWatch)) {
                 
                 fsWatch = setTimeout(function() {
-                    return compiler.build(configData, function(err) {
+
+                    compiler.build(function(err) {
                         
                         if (err) {
                             print.errorBuild(err);
@@ -55,7 +56,7 @@ function start() {
                             print.successBuild();
                         }
 
-                        fsWatch = null;
+                        fsWatch = false;
                     });
                 }, 10);
             }
