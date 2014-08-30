@@ -149,7 +149,6 @@ function render(file, callback) {
                 
         // If error found
         if (err) {
-            console.log(string);
             return callback('@situs-data syntax error:\n' + err + '\n at ' + filePath);
         }
 
@@ -174,7 +173,7 @@ function render(file, callback) {
 
             // Render data
             var templateData = lodash.extend(config.get('global'), localData.content);
-
+            
             try {
                 var template = handlebars.compile(string);
                 string = template(templateData);
