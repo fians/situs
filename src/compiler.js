@@ -182,10 +182,21 @@ function render(file, callback) {
             }
 
             /**
-             * // Convert to html file
+             * Convert to html file
              */
             if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
                 file = path.basename(file, fileExt) + '.html';
+            }
+
+            /**
+             * Convert file to permalinks if allowed
+             */
+            if (
+                config.get('permalink') && 
+                path.extname(file) === '.html' && 
+                file.indexOf('index.html') === -1
+            ) {
+                file = file.replace('.html', '') + '/index.html';
             }
 
             // Save file

@@ -46,6 +46,7 @@ describe('Config Module: ', function() {
                     'situs/**/*'
                 ],
                 'markdown': false,
+                'permalink': false,
                 'port': 4000,
                 'noConfig': true,
                 'global': {}
@@ -80,6 +81,7 @@ describe('Config Module: ', function() {
                     'node_modules/**/*',
                 ],
                 'markdown': false,
+                'permalink': false,
                 'port': 8080,
                 'noConfig': false,
                 'global': {}

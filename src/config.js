@@ -24,6 +24,7 @@ function read(filePath, callback) {
             'situs.json'
         ],
         'markdown': false,
+        'permalink': false,
         'port': 4000,
         'noConfig': false,
         'global': {}
