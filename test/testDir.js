@@ -1,6 +1,6 @@
 
 /**
- * Test for compiler module
+ * Test for directory utility module
  */
 
 var lodash  = require('lodash');
@@ -8,7 +8,7 @@ var path    = require('path');
 var assert  = require('assert');
 var utils   = require('./utils.js');
 
-var compiler = require('../src/compiler.js');
+var dir = require('../src/dir.js');
 
 
 /**
@@ -53,7 +53,7 @@ describe('Compiler Module:', function() {
 
         it('should return list of file based on source dir', function(done) {
 
-            compiler.getFileList('./', [], function(files) {
+            dir.fileList('./', [], function(files) {
                 assert.deepEqual(files, [
                     'level-1/level-2/two.html',
                     'level-1/one.html',
@@ -67,7 +67,7 @@ describe('Compiler Module:', function() {
 
         it('should return list of file based on source dir and also ignore list', function(done) {
 
-            compiler.getFileList('./', ['./level-1/**/*'], function(files) {
+            dir.fileList('./', ['./level-1/**/*'], function(files) {
                 assert.deepEqual(files, [
                     'three.html',
                     'zero.html'

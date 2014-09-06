@@ -3,10 +3,8 @@
  * Compiler utility
  */
 
-var colors      = require('colors');
 var fs          = require('fs-extra');
 var path        = require('path');
-var glob        = require('glob-all');
 var lodash      = require('lodash');
 var async       = require('async');
 var marked      = require('marked');
@@ -15,42 +13,12 @@ var config      = require('./config.js');
 var handlebars  = require('./handlebars.js');
 var parser      = require('./parser.js');
 var print       = require('./print.js');
+var dir         = require('./dir.js');
 
 module.exports = {
-    generate: generate,
     build: build,
     getFileList: getFileList
 };
-
-/**
- * Build site (main function)
- */
-function generate() {
-
-    var configFile = path.resolve(process.cwd(), './situs.json');
-
-    config.read(configFile, function(error) {
-
-        if (error) {
-            return print.errorBuild(error);
-        }
-
-        if (config.get('noConfig')) {
-            print.noConfigJson();
-        }
-
-        build(function(err) {
-
-            if (err) {
-                return print.errorBuild(err);
-            }
-
-            return print.successBuild();
-        });
-
-    });
-
-}
 
 /**
  * Building static site
@@ -58,9 +26,9 @@ function generate() {
 function build(callback) {
     
     // Clean destination directory
-    cleanDirectory(path.resolve(process.cwd(), config.get('destination')));
+    dir.clean(path.resolve(process.cwd(), config.get('destination')));
     
-    getFileList(config.get('source'), config.get('ignore'), function(files) {
+    dir.fileList(config.get('source'), config.get('ignore'), function(files) {
         
         async.each(files, function(file, callback) {
             render(file, function(err) {
@@ -70,52 +38,6 @@ function build(callback) {
             return callback(err);
         });
 
-    });
-
-}
-
-/**
- * Get file list based on source directory and ignore list
- */
-function getFileList(sourceDir, ignoreList, callback) {
-
-    // Set pattern
-    var patterns = ['**/*.*'];
-
-    lodash.forEach(ignoreList, function(item) {
-        patterns.push('!'+path.normalize(item));
-    });
-
-    // Glob the files
-    var files = glob.sync(patterns, {
-        cwd: path.resolve(process.cwd(), sourceDir),
-    });
-
-    // Filter file only
-    files = lodash.filter(files, function(item) {
-        var filePath = path.resolve(process.cwd(), sourceDir+'/'+item);
-
-        if (!fs.existsSync(filePath)) {
-            return false;
-        }
-
-        return fs.lstatSync(filePath).isFile();
-    });
-
-    return callback(files);
-}
-
-/**
- * Clean all files in directory
- */
-function cleanDirectory(dirPath) {
-
-    var files = glob.sync(['**/*'], {
-        cwd: dirPath,
-    });
-
-    lodash.forEach(files, function(file) {
-        fs.removeSync(path.resolve(dirPath, file));
     });
 
 }

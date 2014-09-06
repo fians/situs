@@ -6,9 +6,9 @@
 var minimist    = require('minimist');
 var path        = require('path');
 
-var print       = require('../src/print.js');
-var compiler    = require('../src/compiler.js');
-var server      = require('../src/server.js');
+var print       = require('./print.js');
+var build       = require('./build.js');
+var server      = require('./server.js');
 
 var argv = minimist(process.argv.slice(2));
 
@@ -28,7 +28,7 @@ if (command === undefined) {
 
 switch(command) {
     case 'build':
-        return compiler.generate();
+        return build.start();
     case 'server':
         return server.start();
     case 'help':
