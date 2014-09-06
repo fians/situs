@@ -146,4 +146,34 @@ describe('Parser module:', function() {
 
         });
     });
+
+    describe('isHtml() test', function() {
+
+        it('should return false if file is not html', function() {
+            assert.equal(false, parser.isHtml('file.css'));
+        });
+
+        it('should return true if file is html', function() {
+            assert.equal(true, parser.isHtml('file.html'));
+        });
+
+    });
+
+    describe('isMarkdown() test', function() {
+
+        it('should return false if file is not markdown', function() {
+            assert.equal(false, parser.isMarkdown('file.html'));
+
+        });
+
+        it('should return true if file is markdown', function() {
+            assert.equal(true, parser.isMarkdown('file.markdown'));
+            assert.equal(true, parser.isMarkdown('file.mdown'));
+            assert.equal(true, parser.isMarkdown('file.mkdn'));
+            assert.equal(true, parser.isMarkdown('file.mkd'));
+            assert.equal(true, parser.isMarkdown('file.md'));
+        });
+
+    });
+
 });

@@ -13,7 +13,9 @@ module.exports = {
     stripData: stripData,
     insertString: insertString,
 	includeFile: includeFile,
-	getData: getData
+	getData: getData,
+    isHtml: isHtml,
+    isMarkdown: isMarkdown
 };
 
 
@@ -120,4 +122,24 @@ function getData(string) {
 
     data.content = JSON.parse(capture[1]);
     return data;
+}
+
+/**
+ * Check if file is HTML or not
+ */
+function isHtml(filePath) {
+
+    var fileExt = path.extname(filePath).toLowerCase();
+    return fileExt === '.html';
+}
+
+/**
+ * Check if file is markdown file or not
+ */
+function isMarkdown(filePath) {
+
+    var fileExt     = path.extname(filePath).toLowerCase();
+    var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
+
+    return markdownExt.indexOf(fileExt) !== -1;
 }

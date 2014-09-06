@@ -16,8 +16,7 @@ var print       = require('./print.js');
 var dir         = require('./dir.js');
 
 module.exports = {
-    build: build,
-    getFileList: getFileList
+    build: build
 };
 
 /**
@@ -50,10 +49,16 @@ function render(file, callback) {
     
     // Get full path dan file content
     var filePath    = path.resolve(process.cwd(), config.get('source')+'/'+file);
-    var fileExt     = path.extname(filePath).toLowerCase();
-
-    // Detect markdown file
-    var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
+    
+    // Prevent parse file other than html and markdown
+    if (!parser.isHtml(filePath) && !parser.isMarkdown(filePath)) {
+        
+        var destPath = path.resolve(process.cwd(), config.get('destination')+'/'+file);
+        
+        return fs.copy(filePath, destPath, function(err) {
+            callback(err);
+        });
+    }
 
     fs.readFile(filePath, {encoding: 'utf8'}, function(err, string) {
         
@@ -80,7 +85,7 @@ function render(file, callback) {
         /**
          * Parse markdown file
          */
-        if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
+        if (config.get('markdown') && parser.isMarkdown(filePath)) {
 
             // Convert string
             string = marked(string, {sanitize: false});
@@ -106,7 +111,7 @@ function render(file, callback) {
             /**
              * Convert to html file
              */
-            if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
+            if (config.get('markdown') && parser.isMarkdown(filePath)) {
                 file = path.basename(file, fileExt) + '.html';
             }
 
@@ -115,7 +120,7 @@ function render(file, callback) {
              */
             if (
                 config.get('permalink') && 
-                path.extname(file) === '.html' && 
+                parser.isHtml(filePath) && 
                 file.indexOf('index.html') === -1
             ) {
                 file = file.replace('.html', '') + '/index.html';
