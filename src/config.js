@@ -11,7 +11,8 @@ var print       = require('./print.js');
 
 module.exports = {
     read: read,
-    data: data
+    data: data,
+    parseOption: parseOption
 };
 
 function read(filePath, callback) {
@@ -100,4 +101,51 @@ function data(key, value) {
     config[key] = value;
     process.env.SITUS = JSON.stringify(config);
 
+}
+
+/**
+ * Parse command line option
+ * and overide default situs.json configuration
+ */
+function parseOption(argv) {
+
+    // Set default configuration
+    var stringKey = [
+        'source',
+        'destination',
+        'port'
+    ];
+
+    var boolKey = [
+        'markdown',
+        'permalink',
+    ];
+
+    var arrayKey = [
+        'ignore-list',
+    ];
+
+    // Overide default config
+    lodash.forOwn(argv, function(value, key) {
+
+        if (stringKey.indexOf(key) !== -1) {
+            data(key, value);
+        }
+
+        if (boolKey.indexOf(key) !== -1) {
+            data(key, true);
+        }
+
+        if (arrayKey.indexOf(key) !== -1) {
+
+            var list = value.split(',');
+
+            list = lodash.forEach(list, function(item) {
+                item.replace('"');
+            });
+
+            data(key, list);
+        }
+
+    });
 }

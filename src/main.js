@@ -48,6 +48,9 @@ function trigger(command) {
 
     config.read(configFile, function(error, configData) {
 
+        // Parse console option to overide situs.json
+        config.parseOption(argv);
+
         if (command === 'build') {
 
             if (error) {
