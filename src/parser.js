@@ -18,7 +18,6 @@ module.exports = {
     isMarkdown: isMarkdown
 };
 
-
 /**
  * Strip all @situs-data syntax on string
  */

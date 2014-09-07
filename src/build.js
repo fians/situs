@@ -14,26 +14,17 @@ module.exports = {
 
 function start() {
 
-    var configFile = path.resolve(process.cwd(), './situs.json');
+    if (config.get('noConfig')) {
+        print.noConfigJson();
+    }
 
-    config.read(configFile, function(error) {
+    compiler.build(function(err) {
 
-        if (error) {
-            return print.errorBuild(error);
+        if (err) {
+            return print.errorBuild(err);
         }
 
-        if (config.get('noConfig')) {
-            print.noConfigJson();
-        }
-
-        compiler.build(function(err) {
-
-            if (err) {
-                return print.errorBuild(err);
-            }
-
-            return print.successBuild();
-        });
-
+        return print.successBuild();
     });
+
 }

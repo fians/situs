@@ -112,6 +112,7 @@ function render(file, callback) {
              * Convert to html file
              */
             if (config.get('markdown') && parser.isMarkdown(filePath)) {
+                var fileExt = path.extname(filePath).toLowerCase();
                 file = path.basename(file, fileExt) + '.html';
             }
 

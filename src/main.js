@@ -9,6 +9,7 @@ var path        = require('path');
 var print       = require('./print.js');
 var build       = require('./build.js');
 var server      = require('./server.js');
+var config      = require('./config.js');
 
 var argv = minimist(process.argv.slice(2));
 
@@ -28,12 +29,39 @@ if (command === undefined) {
 
 switch(command) {
     case 'build':
-        return build.start();
+        return trigger('build');
     case 'server':
-        return server.start();
+        return trigger('server');
     case 'help':
         return print.help();
     default:
         print.errorConsole(command);
         print.help();
+}
+
+/**
+ * Trigger command specified by console argument
+ */
+function trigger(command) {
+
+    var configFile = path.resolve(process.cwd(), './situs.json');
+
+    config.read(configFile, function(error, configData) {
+
+        if (command === 'build') {
+
+            if (error) {
+                return print.errorBuild(error);
+            }
+
+            return build.start();
+        }
+
+        if (command === 'server') {
+            return server.start();
+        }
+
+        return false;
+    });
+
 }
