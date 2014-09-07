@@ -1,6 +1,6 @@
 {
   "name": "situs",
-  "version": "0.2.1",
+  "version": "0.3.0-dev",
   "description": "Simple static site generator",
   "main": "./src/main.js",
   "scripts": {
