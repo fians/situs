@@ -47,7 +47,7 @@ function includeFile(filePath, string, callback) {
     var markdownExt = ['.markdown', '.mdown', '.mkdn', '.mkd', '.md'];
 
     // If file is markdown, remove <p> tag around it
-    if (config.get('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
+    if (config.data('markdown') && (markdownExt.indexOf(fileExt) !== -1)) {
         string = string.replace(/<p\>(\@situs\-include\([\s\S]*?\))<\/p\>/g, '$1');
     }
 

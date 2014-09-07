@@ -11,7 +11,7 @@ var print       = require('./print.js');
 
 module.exports = {
     read: read,
-    get: get
+    data: data
 };
 
 function read(filePath, callback) {
@@ -72,10 +72,11 @@ function read(filePath, callback) {
     });
 }
 
+
 /**
- * Get data from JSON string process.env.SITUS
+ * Utility to get or set configuration data
  */
-function get(param) {
+function data(key, value) {
 
     if (!process.env.hasOwnProperty('SITUS')) {
         return null;
@@ -83,10 +84,20 @@ function get(param) {
 
     var config = JSON.parse(process.env.SITUS);
 
-    if (!(config.hasOwnProperty(param))) {
-        return false;
+    // If there is no value being set
+    // return current config value
+    if (value === undefined) {
+
+        if (!(config.hasOwnProperty(key))) {
+            return false;
+        }
+
+        return config[key];
+
     }
 
-    return config[param];
+    // Overwrite new data
+    config[key] = value;
+    process.env.SITUS = JSON.stringify(config);
 
 }

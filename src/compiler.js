@@ -25,9 +25,9 @@ module.exports = {
 function build(callback) {
     
     // Clean destination directory
-    dir.clean(path.resolve(process.cwd(), config.get('destination')));
+    dir.clean(path.resolve(process.cwd(), config.data('destination')));
     
-    dir.fileList(config.get('source'), config.get('ignore'), function(files) {
+    dir.fileList(config.data('source'), config.data('ignore'), function(files) {
         
         async.each(files, function(file, callback) {
             render(file, function(err) {
@@ -48,12 +48,12 @@ function build(callback) {
 function render(file, callback) {
     
     // Get full path dan file content
-    var filePath    = path.resolve(process.cwd(), config.get('source')+'/'+file);
+    var filePath    = path.resolve(process.cwd(), config.data('source')+'/'+file);
     
     // Prevent parse file other than html and markdown
     if (!parser.isHtml(filePath) && !parser.isMarkdown(filePath)) {
         
-        var destPath = path.resolve(process.cwd(), config.get('destination')+'/'+file);
+        var destPath = path.resolve(process.cwd(), config.data('destination')+'/'+file);
         
         return fs.copy(filePath, destPath, function(err) {
             callback(err);
@@ -85,7 +85,7 @@ function render(file, callback) {
         /**
          * Parse markdown file
          */
-        if (config.get('markdown') && parser.isMarkdown(filePath)) {
+        if (config.data('markdown') && parser.isMarkdown(filePath)) {
 
             // Convert string
             string = marked(string, {sanitize: false});
@@ -99,7 +99,7 @@ function render(file, callback) {
             }
 
             // Render data
-            var templateData = lodash.extend(config.get('global'), localData.content);
+            var templateData = lodash.extend(config.data('global'), localData.content);
             
             try {
                 var template = handlebars.compile(string);
@@ -111,7 +111,7 @@ function render(file, callback) {
             /**
              * Convert to html file
              */
-            if (config.get('markdown') && parser.isMarkdown(filePath)) {
+            if (config.data('markdown') && parser.isMarkdown(filePath)) {
                 var fileExt = path.extname(filePath).toLowerCase();
                 file = path.basename(file, fileExt) + '.html';
             }
@@ -120,7 +120,7 @@ function render(file, callback) {
              * Convert file to permalinks if allowed
              */
             if (
-                config.get('permalink') && 
+                config.data('permalink') && 
                 parser.isHtml(filePath) && 
                 file.indexOf('index.html') === -1
             ) {
@@ -130,7 +130,7 @@ function render(file, callback) {
             // Save file
             var savePath = path.resolve(
                 process.cwd(), 
-                (config.get('destination')+'/'+file)
+                (config.data('destination')+'/'+file)
             );
 
             fs.outputFile(savePath, string, function(err) {

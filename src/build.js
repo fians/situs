@@ -14,7 +14,7 @@ module.exports = {
 
 function start() {
 
-    if (config.get('noConfig')) {
+    if (config.data('noConfig')) {
         print.noConfigJson();
     }
 

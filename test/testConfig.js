@@ -105,25 +105,25 @@ describe('Config Module: ', function() {
 
     });
 
-    describe('config.get() test', function() {
+    describe('config.data() test', function() {
 
         it('should return null if process.env.SITUS is not exist', function() {
 
-            assert.equal(null, config.get('source'));
+            assert.equal(null, config.data('source'));
 
         });
 
         it('should return false if parameter is not exist', function() {
 
             process.env.SITUS = JSON.stringify({destination: './situs'});
-            assert.equal(false, config.get('source'));
+            assert.equal(false, config.data('source'));
 
         });
 
         it('should return correct value if parameter exist', function() {
 
             process.env.SITUS = JSON.stringify({source: './situs'});
-            assert.equal('./situs', config.get('source'));
+            assert.equal('./situs', config.data('source'));
 
         });
 
