@@ -113,17 +113,25 @@ describe('Config Module: ', function() {
 
         });
 
-        it('should return false if parameter is not exist', function() {
+        it('should return false if key is not exist', function() {
 
             process.env.SITUS = JSON.stringify({destination: './situs'});
             assert.equal(false, config.data('source'));
 
         });
 
-        it('should return correct value if parameter exist', function() {
+        it('should return correct value if key exist', function() {
 
             process.env.SITUS = JSON.stringify({source: './situs'});
             assert.equal('./situs', config.data('source'));
+
+        });
+
+        it('should set new config data if value exist', function() {
+
+            process.env.SITUS = JSON.stringify({source: './situs'});
+            config.data('source', './new-situs');
+            assert.equal('./new-situs', config.data('source'));
 
         });
 
