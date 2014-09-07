@@ -122,7 +122,7 @@ function parseOption(argv) {
     ];
 
     var arrayKey = [
-        'ignore-list',
+        'ignore',
     ];
 
     // Overide default config
@@ -139,12 +139,13 @@ function parseOption(argv) {
         if (arrayKey.indexOf(key) !== -1) {
 
             var list = value.split(',');
+            var newList = [];
 
-            list = lodash.forEach(list, function(item) {
-                item.replace('"');
+            lodash.forEach(list, function(item) {
+                newList.push(item.replace(/["']/g, ''));
             });
 
-            data(key, list);
+            data(key, newList);
         }
 
     });

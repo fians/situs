@@ -137,4 +137,50 @@ describe('Config Module: ', function() {
 
     });
 
+    describe('config.parseOption() test', function() {
+
+        it('should not overide config if key not valid', function() {
+
+            process.env.SITUS = JSON.stringify({source: './situs'});
+
+            config.parseOption({hello: 'world'});
+
+            assert.equal(false, config.data('hello'));
+
+        });
+
+        it('should overide config string value', function() {
+
+            process.env.SITUS = JSON.stringify({source: './situs'});
+
+            config.parseOption({source: './situs-new'});
+
+            assert.equal('./situs-new', config.data('source'));
+            
+        });
+
+        it('should overide config boolean value', function() {
+
+            process.env.SITUS = JSON.stringify({source: './situs'});
+
+            config.parseOption({markdown: true});
+
+            assert.equal(true, config.data('markdown'));
+
+        });
+
+        it('should overide config array value (ignore-list)', function() {
+
+            process.env.SITUS = JSON.stringify({source: './situs'});
+
+            config.parseOption({'ignore': '"./hello","./world"'});
+
+            assert.deepEqual(config.data('ignore'), [
+                './hello',
+                './world'
+            ]);
+
+        });
+    });
+
 });
