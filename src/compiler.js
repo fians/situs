@@ -121,7 +121,7 @@ function render(file, callback) {
              */
             if (
                 config.data('permalink') && 
-                parser.isHtml(filePath) && 
+                (parser.isHtml(filePath) || parser.isMarkdown(filePath)) && 
                 file.indexOf('index.html') === -1
             ) {
                 file = file.replace('.html', '') + '/index.html';
