@@ -4,7 +4,6 @@
  */
 
 var handlebars  = require('handlebars');
-var hljs        = require('highlight.js');
 
 /**
  * Escape function
