@@ -58,6 +58,7 @@ __situs.json (default):__
     "node_modules/**/*"
   ],
   "markdown": false,
+  "permalink": false,
   "port": 4000,
   "global": {}
 }
@@ -69,8 +70,28 @@ __situs.json (default):__
 | `destination` | _string_  | Destination directory of static site for compiled source files             |
 | `ignore`      | _array_   | List of glob pattern to prevent files or directory to be compiled by Situs |
 | `markdown`    | _boolean_ | Render markdown to html. If it set `false`, markdown file will not converted to be html when you build source.|
+| `permalink`   | _boolean_ | Enable permalink/pretty url                                                |
 | `port`        | _integer_ | Port of development server                                                 |
 | `global`      | _object_  | Global variable that will be rendered to source files                      |
+
+Beside setting up your configuration with situs.json, you can overide default configuration directly from command line. 
+
+```
+# Set local development port
+$ situs build --port=4000
+
+# Set source directory
+$ situs build --source=./path/to/dir
+
+# Set destination directory
+$ situs build --destination=./path/to/dir
+
+# Enable markdown parser
+$ situs build --markdown
+
+# Enable permalink (pretty-url)
+$ situs build --permalink
+```
 
 ## Built-in Function
 
