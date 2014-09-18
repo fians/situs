@@ -54,7 +54,13 @@ function clean(dirPath) {
     });
 
     lodash.forEach(files, function(file) {
-        fs.removeSync(path.resolve(dirPath, file));
+
+        var filePath = path.resolve(dirPath, file);
+
+        if (fs.existsSync(filePath)) {
+            fs.removeSync(filePath);
+        }
+
     });
 
 }

@@ -35,7 +35,10 @@ function start() {
     print.startServer(config.data('port'));
 
     // Watch change
-    var watcher = chokidar.watch(sourceDir);
+    var watcher = chokidar.watch(sourceDir, {ignored: function(filePath) {
+        return filePath.replace(destDir, '').indexOf(sourceDir) === -1;
+    }});
+    
     var fsWatch = false;
 
     watcher.on('all', function(event, obj) {
@@ -61,7 +64,7 @@ function start() {
 
     // Make sure watching still run even there is error
     process.on('uncaughtException', function(err) {
-        fsWatch = true;
+        fsWatch = false;
     });
     
 }
