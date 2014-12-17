@@ -1,6 +1,6 @@
 # Situs
 
-[![Build Status](https://travis-ci.org/fians/situs.svg?branch=v0.2.0-dev)](https://travis-ci.org/fians/situs)
+[![Circle CI](https://circleci.com/gh/fians/situs.png?style=badge)](https://circleci.com/gh/fians/situs)
 [![NPM version](https://badge.fury.io/js/situs.svg)](http://badge.fury.io/js/situs)
 ![NPM version](http://img.shields.io/npm/dm/situs.svg)
 
