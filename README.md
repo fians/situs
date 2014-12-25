@@ -74,7 +74,7 @@ __situs.json (default):__
 | `port`        | _integer_ | Port of development server                                                 |
 | `global`      | _object_  | Global variable that will be rendered to source files                      |
 
-Beside setting up your configuration with situs.json, you can overide default configuration directly from command line. 
+You can also overide default configuration directly from command line. 
 
 ```
 # Set local development port
@@ -293,4 +293,4 @@ _Directory structure (after build)_
 
 ## License
 
-Situs released under [MIT license](https://github.com/fians/situs/blob/master/LICENSE). 2014 (c) Alfiana Sibuea. All right reserved.
+Situs released under [MIT license](https://github.com/fians/situs/blob/master/LICENSE). 2014 &copy; Alfiana Sibuea. All right reserved.
