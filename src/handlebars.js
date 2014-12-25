@@ -35,9 +35,7 @@ handlebars.registerHelper('code', function(options) {
         attribute = options.hash.class;
     }
 
-    return '<pre><code class="'+attribute+'">' + 
-        string.replace(/(\r\n|\r|\n)/, '') + 
-        '</code></pre>';
+    return '<pre><code class="'+attribute+'">' + string + '</code></pre>';
 });
 
 module.exports = handlebars;
