@@ -293,4 +293,4 @@ _Directory structure (after build)_
 
 ## License
 
-Situs released under [MIT license](https://github.com/fians/situs/blob/master/LICENSE). 2014 &copy; Alfiana Sibuea. All right reserved.
+Situs released under [MIT license](https://github.com/fians/situs/blob/master/LICENSE). 2014-2020 &copy; Alfiana Sibuea. All right reserved.
