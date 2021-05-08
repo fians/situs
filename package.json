@@ -30,7 +30,7 @@
     "colors": "1.4.0",
     "fs-extra": "9.0.0",
     "glob-all": "3.2.1",
-    "handlebars": "4.7.6",
+    "handlebars": "4.7.7",
     "json-lint": "0.1.0",
     "lodash": "4.17.15",
     "marked": "1.0.0",
