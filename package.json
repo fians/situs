@@ -34,7 +34,7 @@
     "json-lint": "0.1.0",
     "lodash": "4.17.15",
     "marked": "1.0.0",
-    "minimist": "1.2.5",
+    "minimist": "1.2.6",
     "node-static": "0.7.11"
   },
   "devDependencies": {
