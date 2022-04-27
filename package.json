@@ -38,7 +38,7 @@
     "node-static": "0.7.11"
   },
   "devDependencies": {
-    "grunt": "1.1.0",
+    "grunt": "1.5.2",
     "grunt-contrib-jshint": "2.1.0",
     "grunt-mocha-test": "0.13.3",
     "mocha": "7.1.2"
