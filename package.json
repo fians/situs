@@ -25,7 +25,7 @@
     "url": "https://github.com/fians/situs/issues"
   },
   "dependencies": {
-    "async": "3.2.0",
+    "async": "3.2.2",
     "chokidar": "3.4.0",
     "colors": "1.4.0",
     "fs-extra": "9.0.0",
